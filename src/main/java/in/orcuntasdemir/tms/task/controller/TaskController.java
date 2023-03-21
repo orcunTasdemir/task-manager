@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import in.orcuntasdemir.tms.task.entity.Task;
 import in.orcuntasdemir.tms.task.service.TaskService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class TaskController {
@@ -45,7 +46,7 @@ public class TaskController {
 	public String listTasks(@RequestParam(required = false) Map<String, String> qparams, Model model) {
 		String status = qparams.get("status");
 		String dir = qparams.get("dir");
-		List<Task> tasks = taskService.getAllTasks(status);		
+		List<Task> tasks = taskService.getAllTasks(status);
 		tasks = taskService.sortByDueDate(tasks, dir);
 		model.addAttribute("tasks", tasks);
 
@@ -68,12 +69,14 @@ public class TaskController {
 	}
 
 	@GetMapping("/tasks/complete/{id}")
-	public String completeTask(@PathVariable Long id, Model model) {
+	public String completeTask(@PathVariable Long id, HttpServletRequest request, Model model) {
+
 		Task existingTask = taskService.getTaskById(id);
 		existingTask.setIsDone(!existingTask.getIsDone());
 		// Save the updated task object
 		taskService.updateTask(existingTask);
-		return "redirect:/tasks";
+	    String referer = request.getHeader("Referer");
+		return "redirect:" + referer;
 	}
 
 	@GetMapping("/tasks/edit/{id}")
