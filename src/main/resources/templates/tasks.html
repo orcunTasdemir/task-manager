@@ -70,14 +70,14 @@ $(".dropdown-menu li a").click(function(){
 				<button class="btn btn-warning dropdown-toggle btn-sm" type="button"
 					id="dropdownMenuButton" data-bs-toggle="dropdown"
 					aria-haspopup="true" aria-expanded="false"
-					th:text="${param.dir == null || param.dir.toString().equals('ascending') ? ': Later First' : ': Sooner First'}"></button>
+					th:text=" 'Sort Tasks by: ' + ${param.dir == null || param.dir.toString().equals('ascending') ? 'Later First' : 'Sooner First'}"></button>
 
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 					<a class="dropdown-item"
 						th:href="@{/tasks(status=${param.status},dir=descending)}">Sooner
-						first</a> <a class="dropdown-item"
+						First</a> <a class="dropdown-item"
 						th:href="@{/tasks(status=${param.status},dir=ascending)}">Later
-						first</a>
+						First</a>
 				</div>
 			</div>
 		</div>
