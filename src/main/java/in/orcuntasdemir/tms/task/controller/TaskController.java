@@ -46,6 +46,7 @@ public class TaskController {
 	public String listTasks(@RequestParam(required = false) Map<String, String> qparams, Model model) {
 		String status = qparams.get("status");
 		String dir = qparams.get("dir");
+		//System.out.printf("statushere: ", status);
 		List<Task> tasks = taskService.getAllTasks(status);
 		tasks = taskService.sortByDueDate(tasks, dir);
 		model.addAttribute("tasks", tasks);
@@ -63,9 +64,12 @@ public class TaskController {
 	}
 
 	@PostMapping("/tasks")
-	public String saveTask(@ModelAttribute("task") Task task) {
+	public String saveTask(@ModelAttribute("task") Task task,
+			@RequestParam(required = false) Map<String, String> qparams) {
 		taskService.saveTask(task);
-		return "redirect:/tasks";
+		String status = qparams.get("status");
+		String dir = qparams.get("dir");
+		return "redirect:/tasks?status=" + status + "&dir=" + dir;
 	}
 
 	@GetMapping("/tasks/complete/{id}")
@@ -75,7 +79,8 @@ public class TaskController {
 		existingTask.setIsDone(!existingTask.getIsDone());
 		// Save the updated task object
 		taskService.updateTask(existingTask);
-	    String referer = request.getHeader("Referer");
+		// go back one page
+		String referer = request.getHeader("Referer");
 		return "redirect:" + referer;
 	}
 
@@ -86,7 +91,8 @@ public class TaskController {
 	}
 
 	@PostMapping("/tasks/{id}")
-	public String updateTask(@PathVariable Long id, @ModelAttribute("task") Task task, Model model) {
+	public String updateTask(@PathVariable Long id, @ModelAttribute("task") Task task, Model model,
+			@RequestParam(required = false) Map<String, String> qparams) {
 
 		// get task from database by id
 		Task existingTask = taskService.getTaskById(id);
@@ -100,13 +106,17 @@ public class TaskController {
 
 		// Save the updated task object
 		taskService.updateTask(existingTask);
-		return "redirect:/tasks";
+		String status = qparams.get("status");
+		String dir = qparams.get("dir");
+		return "redirect:/tasks?status=" + status + "&dir=" + dir;
 	}
 
 	@GetMapping("/tasks/{id}")
-	public String deleteTask(@PathVariable long id) {
+	public String deleteTask(@PathVariable long id, @RequestParam(required = false) Map<String, String> qparams) {
 		taskService.deleteTaskById(id);
-		return "redirect:/tasks";
+		String status = qparams.get("status");
+		String dir = qparams.get("dir");
+		return "redirect:/tasks?status=" + status + "&dir=" + dir;
 	}
 
 }

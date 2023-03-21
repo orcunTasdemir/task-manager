@@ -37,6 +37,7 @@ public class TaskServiceImpl implements TaskService {
 		} else if (status.equals("ongoing")) {
 			allTasks = taskRepository.findByisDone(false);
 		}
+		System.out.printf("allTasks: ", allTasks);
 		return allTasks;
 	}
 

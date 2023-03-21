@@ -27,7 +27,7 @@ $(".dropdown-menu li a").click(function(){
 
 	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
 		<!-- Brand -->
-		<a class="navbar-brand" th:href="@{/tasks}">Task Management System</a>
+		<a class="navbar-brand" th:href="@{/tasks(dir=${param.dir == null ? 'descending' : param.dir})}">Task Management System</a>
 
 		<!-- Toggler/collapsibe Button -->
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -38,12 +38,14 @@ $(".dropdown-menu li a").click(function(){
 		<!-- Navbar links -->
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
-				<li class="nav-item"><a class="nav-link" th:href="@{/tasks}">All
+				<li class="nav-item"><a class="nav-link" th:href="@{/tasks(dir=${param.dir == null ? 'descending' : param.dir})}">All
 						Tasks</a></li>
 				<li class="nav-item"><a class="nav-link"
-					th:href="@{/tasks(status=completed)}">Completed Tasks</a></li>
+					th:href="@{/tasks(status=completed, dir=${param.dir == null ? 'descending' : param.dir})}">Completed
+						Tasks</a></li>
 				<li class="nav-item"><a class="nav-link"
-					th:href="@{/tasks(status=ongoing)}">Ongoing Tasks</a></li>
+					th:href="@{/tasks(status=ongoing, dir=${param.dir == null ? 'descending' : param.dir})}">Ongoing
+						Tasks</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -61,20 +63,21 @@ $(".dropdown-menu li a").click(function(){
 
 		<div class="row justify-content-between">
 			<div class="col-lg-3">
-				<br> <a th:href="@{/tasks/new}"
+				<br> <a th:href="@{/tasks/new(status=${param.status}, dir=${param.dir == null ? 'descending' : param.dir})}"
 					class="btn btn-primary btn-md mb-3"> Add Task</a> <br>
 			</div>
 			<div class="dropdown">
 				<button class="btn btn-warning dropdown-toggle btn-sm" type="button"
 					id="dropdownMenuButton" data-bs-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false">Sort tasks by
-					Due date</button>
+					aria-haspopup="true" aria-expanded="false"
+					th:text="${param.dir == null || param.dir.toString().equals('ascending') ? ': Later First' : ': Sooner First'}"></button>
 
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 					<a class="dropdown-item"
-						th:href="@{/tasks(status=${param.status},dir=descending)}">Descending</a>
-					<a class="dropdown-item"
-						th:href="@{/tasks(status=${param.status},dir=ascending)}">Ascending</a>
+						th:href="@{/tasks(status=${param.status},dir=descending)}">Sooner
+						first</a> <a class="dropdown-item"
+						th:href="@{/tasks(status=${param.status},dir=ascending)}">Later
+						first</a>
 				</div>
 			</div>
 		</div>
@@ -85,7 +88,7 @@ $(".dropdown-menu li a").click(function(){
 					<th>Title</th>
 					<th>Description</th>
 					<th>Completed</th>
-					<th>Due Date</th> 
+					<th>Due Date</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -102,9 +105,9 @@ $(".dropdown-menu li a").click(function(){
 						class="btn btn-primary">Complete</a></td>
 					<td th:text="${#strings.substring(task.dueDate, 0 ,10)}"></td>
 
-					<td><a th:href="@{/tasks/edit/{id}(id=${task.id})}"
+					<td><a th:href="@{/tasks/edit/{id}(status=${param.status}, dir=${param.dir == null ? 'descending' : param.dir}, id=${task.id})}"
 						class="btn btn-primary">Update</a> <a
-						th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-danger">Delete</a></td>
+						th:href="@{/tasks/{id}(status=${param.status}, dir=${param.dir == null ? 'descending' : param.dir}, id=${task.id})}" class="btn btn-danger">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>
